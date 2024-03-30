@@ -5,19 +5,42 @@ const NoteInput = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [isArchived, setArchived] = useState(false);
+  const [titleError, setTitleError] = useState("");
+  const [bodyError, setBodyError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    const note = {
-      id: +new Date().toTimeString(),
-      title: title,
-      body: body,
-      archived: isArchived,
-      createdAt: +new Date(),
-    };
+    try {
+      if (title === "") {
+        setTitleError("Title can't be empty");
+        throw new Error("Title empty!");
+      } else {
+        setTitleError("");
+      }
 
-    NotesCollection.push(note)
+      if (body === "") {
+        setBodyError("Body can't be empty");
+        throw new Error("Body empty!");
+      } else {
+        setBodyError("");
+      }
+      
+      const note = {
+        id: +new Date(),
+        title: title,
+        body: body,
+        archived: isArchived,
+        createdAt: new Date().toISOString(),
+      };
+      NotesCollection.push(note);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setTitle("");
+      setBody("");
+      setArchived(false);
+    }
+    console.log(NotesCollection);
   };
 
   const handleTitleChange = (e) => {
@@ -28,41 +51,47 @@ const NoteInput = () => {
   };
 
   return (
-    <div className="border border-black p-2 md:p-4">
+    <div className="border border-black flex flex-col p-2 w-full md:p-4 md:w-1/2">
       <h1 className="my-2 text-lg font-bold">Create Note</h1>
-      <form onSubmit={handleSubmit}>
+      <form id="createNote" onSubmit={handleSubmit}>
         <div className="relative">
           <textarea
-            className="border border-black relative z-0 p-2"
+            id="noteTitle"
+            className="border border-black relative z-0 p-2 w-full md:w-3/4 h-12"
             value={title}
             onChange={handleTitleChange}
             placeholder="Title"
-            rows={2}
-            cols={30}
           />
-          <span className="absolute text-xs bottom-2 z-10 right-2">
+          <span className="absolute text-xs bottom-2 z-10 right-2 md:right-24">
             {title.length}/50
           </span>
         </div>
-        <br />
+        {titleError && <p className="text-red-500">{titleError}</p>}
         <textarea
-          className="border border-black"
+          id="noteBody"
+          className="border border-black p-2 w-full h-28 md:w-3/4 md:h-40"
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Body"
-          rows={4}
-          cols={30}
         />
+        {bodyError && <p className="text-red-500">{bodyError}</p>}
         <br />
-        <input
-          type="checkbox"
-          className="border border-black mx-1"
-          checked={isArchived}
-          onChange={(e) => setArchived(e.target.checked)}
-        />
-        <label>Archived</label>
-        <br />
-        <button type="submit">Create</button>
+        <div className="flex justify-center items-center my-2">
+          <input
+            id="noteCondition"
+            type="checkbox"
+            className="border border-black mx-1 w-4 h-4"
+            checked={isArchived}
+            onChange={(e) => setArchived(e.target.checked)}
+          />
+          <label htmlFor="noteCondition">Archived</label>
+        </div>
+        <button
+          type="submit"
+          className="border border-teal-400 p-2 rounded-lg bg-teal-400 font-semibold self-center"
+        >
+          Create
+        </button>
       </form>
     </div>
   );
