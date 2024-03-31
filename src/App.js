@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
+        <Routes className="overflow-x-hidden">
           <Route path='/' element={<Home/>} />
         </Routes>
       </BrowserRouter>

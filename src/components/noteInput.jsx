@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { NotesCollection } from "../model/notes.model";
 
-const NoteInput = () => {
+const NoteInput = ({addNote}) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [isArchived, setArchived] = useState(false);
@@ -32,7 +31,7 @@ const NoteInput = () => {
         archived: isArchived,
         createdAt: new Date().toISOString(),
       };
-      NotesCollection.push(note);
+      addNote(note);
     } catch (error) {
       console.log(error);
     } finally {
@@ -40,7 +39,6 @@ const NoteInput = () => {
       setBody("");
       setArchived(false);
     }
-    console.log(NotesCollection);
   };
 
   const handleTitleChange = (e) => {
@@ -51,7 +49,7 @@ const NoteInput = () => {
   };
 
   return (
-    <div className="border border-black flex flex-col p-2 w-full md:p-4 md:w-1/2">
+    <div className="flex flex-col p-2 w-full  border-b-8 mb-2 border-double border-black md:p-4 md:w-1/2">
       <h1 className="my-2 text-lg font-bold">Create Note</h1>
       <form id="createNote" onSubmit={handleSubmit}>
         <div className="relative">
@@ -69,7 +67,7 @@ const NoteInput = () => {
         {titleError && <p className="text-red-500">{titleError}</p>}
         <textarea
           id="noteBody"
-          className="border border-black p-2 w-full h-28 md:w-3/4 md:h-40"
+          className="border border-black p-2 w-full h-28 md:w-3/4 md:h-20"
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Body"
